@@ -20,12 +20,10 @@ _shader = gpu.shader.from_builtin('IMAGE_COLOR')
 _draw_handle = None
 _image_cache = {}
 
-
 def tag_redraw():
     for area in bpy.context.screen.areas:
         if area.type == 'VIEW_3D':
             area.tag_redraw()
-
 
 class RyRefImage(bpy.types.PropertyGroup):
     """Data container for a reference image overlay."""
@@ -139,7 +137,6 @@ def draw_overlay():
         batch.draw(_shader)
         gpu.state.blend_set('NONE')
 
-
 class RYREF_OT_add_image(bpy.types.Operator):
     """Add a reference image to the overlay system"""
     bl_idname = "ryref.add_image"
@@ -154,7 +151,6 @@ class RYREF_OT_add_image(bpy.types.Operator):
         filename = os.path.basename(self.filepath)
         name = os.path.splitext(filename)[0]
         img.name = name
-
         img.position = (100.0, 100.0)
         img.scale = (0.2, 0.2)
         img.opacity = 1.0
@@ -166,7 +162,6 @@ class RYREF_OT_add_image(bpy.types.Operator):
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
-
 
 class RYREF_OT_remove_image(bpy.types.Operator):
     """Remove the currently selected reference image"""
@@ -182,7 +177,6 @@ class RYREF_OT_remove_image(bpy.types.Operator):
             context.scene.ryref_index = max(0, idx - 1)
         tag_redraw()
         return {'FINISHED'}
-
 
 class RYREF_OT_move_image(bpy.types.Operator):
     """Move the selected reference image up or down in the list"""
@@ -208,13 +202,11 @@ class RYREF_OT_move_image(bpy.types.Operator):
         tag_redraw()
         return {'FINISHED'}
 
-
 class RYREF_UL_ImageList(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         row = layout.row(align=True)
         row.prop(item, "visible", text="", icon='HIDE_OFF' if item.visible else 'HIDE_ON', emboss=False)
         row.prop(item, "name", text="", emboss=False)
-
 
 class RYREF_PT_panel(bpy.types.Panel):
     bl_label = "RyRef"
@@ -257,7 +249,6 @@ class RYREF_PT_panel(bpy.types.Panel):
             row.prop(img, "flip_x", toggle=True)
             row.prop(img, "flip_y", toggle=True)
 
-
 classes = (
     RyRefImage,
     RYREF_OT_add_image,
@@ -266,7 +257,6 @@ classes = (
     RYREF_UL_ImageList,
     RYREF_PT_panel,
 )
-
 
 def register():
     for cls in classes:
@@ -283,7 +273,6 @@ def register():
     global _draw_handle
     _draw_handle = bpy.types.SpaceView3D.draw_handler_add(draw_overlay, (), 'WINDOW', 'POST_PIXEL')
 
-
 def unregister():
     global _draw_handle
     if _draw_handle:
@@ -298,7 +287,6 @@ def unregister():
 
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
 
 if __name__ == "__main__":
     register()
